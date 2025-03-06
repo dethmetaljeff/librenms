@@ -1,0 +1,80 @@
+mib: OG-OMTELEM-MIB
+modules:
+    os:
+        hardware_mib: OG-PRODUCTS-MIB
+        hardware_regex: '/og(?<hardware>\S+)/'
+        version: OG-OMTELEM-MIB::ogOmSystemFirmwareVersion.0
+        version_regex: '/(?<version>\S+)/'
+        serial: OG-OMTELEM-MIB::ogOmSystemSerialNumber.0
+    sensors:
+        pre-cache:
+            data:
+                -
+                    oid:
+                        - ogOmCellUimTable
+        temperature:
+            data:
+                -
+                    oid: ogOmTempSensorTable
+                    value: ogOmTempSensorValue
+                    num_oid: '.1.3.6.1.4.1.25049.10.19.9.1.1.4.{{ $index }}'
+                    descr: ogOmTempSensorName
+                    divisor: 1000
+                    index: 'ogOmTempSensorValue.{{ $index }}'
+                    low_limit: 0
+                    high_limit: 60
+        percent:
+            data:
+                -
+                    oid: ogOmCellUimTable
+                    value: ogOmCellUimSignalQuality
+                    num_oid: '.1.3.6.1.4.1.25049.10.19.6.1.1.9.{{ $index }}'
+                    descr: 'Cellular Modem {{ $index }} Signal Quality'
+                    index: '9.{{ $index }}'
+                    low_limit: 20
+                    low_warn_limit: 40
+                    high_limit: 100
+        signal:
+            data:
+                -
+                    oid: ogOmCellUimTable
+                    value: ogOmCellUimRssi
+                    num_oid: '.1.3.6.1.4.1.25049.10.19.6.1.1.10.{{ $index }}'
+                    descr: 'Cellular Modem {{ $index }} RSSI'
+                    index: '10.{{ $index }}'
+        state:
+            data:
+                -
+                    oid: ogOmCellUimTable
+                    value: ogOmCellUimCardState
+                    num_oid: '.1.3.6.1.4.1.25049.10.19.6.1.1.4.{{ $index }}'
+                    descr: 'Modem {{ $index }} Card State'
+                    index: 'ogOmCellUimCardState.{{ $index }}'
+                    state_name: ogOmCellUimCardState
+                    states:
+                        - { value: 1, descr: Unavailable, graph: 1, generic: 3 }
+                        - { value: 2, descr: Absent, graph: 2, generic: 1 }
+                        - { value: 3, descr: Present, graph: 3, generic: 0 }
+                -
+                    oid: ogOmCellUimTable
+                    value: ogOmCellUimConnectivityHealth
+                    num_oid: '.1.3.6.1.4.1.25049.10.19.6.1.1.11.{{ $index }}'
+                    descr: 'Modem {{ $index }} Connectivity Health'
+                    index: 'ogOmCellUimConnectivityHealth.{{ $index }}'
+                    state_name: ogOmCellUimConnectivityHealth
+                    states:
+                        - { value: 1, descr: Unavailable, graph: 1, generic: 3 }
+                        - { value: 2, descr: Bad, graph: 2, generic: 2 }
+                        - { value: 3, descr: Good, graph: 3, generic: 0 }
+                -
+                    oid: ogOmCellUimTable
+                    value: ogOmCellUimSignalHealth
+                    num_oid: '.1.3.6.1.4.1.25049.10.19.6.1.1.12.{{ $index }}'
+                    descr: 'Modem {{ $index }} Signal Health'
+                    index: 'ogOmCellUimSignalHealth.{{ $index }}'
+                    state_name: ogOmCellUimSignalHealth
+                    states:
+                        - { value: 1, descr: Unavailable, graph: 1, generic: 3 }
+                        - { value: 2, descr: Bad, graph: 2, generic: 2 }
+                        - { value: 3, descr: Moderate, graph: 3, generic: 1 }
+                        - { value: 3, descr: Good, graph: 4, generic: 0 }
